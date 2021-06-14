@@ -1,18 +1,17 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, jsonify, request, flash, redirect, url_for
-from flask_login import login_required, current_user, login_user, logout_user
+from flask_login import login_required, login_user, logout_user
 from flask_login import LoginManager
-from flask_login import current_user
 import os
-from flask_wtf import FlaskForm
-from sqlalchemy.sql.base import NO_ARG
-from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Length, EqualTo
 from flask_wtf.csrf import CsrfProtect
 
 from forms import RegisterForm, ProductForm
 
 csrf = CsrfProtect()
+"""Para validar los datos del forms en el frontend
+(verificar que provienen de ahi realmente)
+
+"""
 # APP
 app = Flask(__name__,
     static_url_path='/static'
