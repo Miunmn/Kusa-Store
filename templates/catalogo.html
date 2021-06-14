@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Catálogo</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='/css/bootstrap.min.css') }}>
+    <link rel="stylesheet" href={{ url_for('static', filename='/css/estilos.css') }}>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body style=" background: #E0E4E5;" onload="get_productos()">
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+                <a href="/"><span class="uk-margin-left uk-margin-small-top" uk-icon="icon: home; ratio: 2"></span>Home</a>
+                <li class="uk-active">
+                    <a class="uk-padding-small-right" href="/catalogo">Catálogo</a>
+                </li>
+            </ul>
+        </div>
+        {% if current_user.is_authenticated %}
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                <li class="uk-active"><a href="#">Active</a></li>
+                <li>
+                    <a>Acciones</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="/agregarproducto">Agregar Producto</a></li>
+                            <li class="uk-active"><a href="/actualizarproducto">Actualizar Producto</a></li>
+                            <li class="uk-active"><a href="/actualizarproducto">Actualizar Producto</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="/logout"><span class="uk-margin-small-right" uk-icon="icon:  sign-out; ratio: 2"></span></a>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="/login"><span class="uk-margin-small-right" uk-icon="icon:  sign-in; ratio: 2"></span></a>
+                </li>
+            </ul>
+        </div>
+        {% endif %}
+    </nav>
+    <div class="wrap">
+        <h1>Catálogo</h1>
+        <div id="inicio_catalogo" class="row justify-content-end">
+            <!--<h1 style="margin: 10px auto 0; text-align: center">Catálogo</h1>-->
+        </div>
+        <!--<div class="row">
+            <button type="button" class="btn btn-primary" name="button">Add a product</button>
+        </div>-->
+        {% if current_user.is_authenticated %}
+        <div >
+            <!--<button type="button" class="btn btn-info" name="button" style="margin-right: 55rem;" href="add_product">Add a product</button>-->
+            <ul>
+                    <a href="/agregarproducto" type="button" class="btn btn-info" name="button" >Agregar producto</a>
+              
+        
+                    <a href="/actualizarproducto" type="button" class="btn btn-danger" name="button">Log out</a>       
+              
+              
+                    <a href="/eliminarproducto" type="button" class="btn btn-warning" name="button">Eliminar producto</a>       
+                
+            </ul>    
+        </div>
+        {% endif %}
+
+        <div class="store-wrapper">
+            <div class="category_list">
+                <a href="#" class="category_item" category="all" onclick="get_productos()">Todo</a>
+                <a href="#" class="category_item" category="Bebidas" onclick="get_bebidas()">Bebidas</a>
+                <a href="#" class="category_item" category="Carnes" onclick="get_carnes()">Carnes</a>
+                <a href="#" class="category_item" category="Frutas y Verduras" onclick="get_frutasyverduras()">Frutas y Verduras</a>
+                <a href="#" class="category_item" category="Limpieza" onclick="get_limpieza()">Limpieza</a>
+            </div>
+            <section class="products-list" id="lista_productos">
+            </section>
+        </div>
+    </div>
+    <script type="text/javascript" src={{ url_for('static', filename='/js/libs/jquery-3.3.1.js') }}></script>
+    <script type="text/javascript" src={{ url_for('static', filename='/js/libs/bootstrap.min.js') }}></script>
+    <script type="text/javascript" src={{ url_for('static', filename='/js/catalogo.js') }}></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit-icons.min.js"></script>
+</body>
+</html>
