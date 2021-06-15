@@ -1,4 +1,6 @@
 # nada
+Go to root directory  (where docker-compose file was created) and execute:
 docker-compose up  -d   # Run the container.
 
-docker-compose down   # Stop and remove everything OR CTRL+c
+To stop:
+docker-compose down   # Stop and remove everything OR CTRL+C
