@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400|Ubuntu&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/556c99d71b.js" crossorigin="anonymous"></script>
+  
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <script src="../static/js/libs/jquery-3.3.1.js"></script>
+    <script src="../static/js/libs/bootstrap.min.js"></script>
+    <title>Mass</title>
+  </head>
+  <body>
+    <style>
+      body{
+          background-color: rgb(14, 121, 209);
+          text-align: center;
+          font-family: 'Montserrat', sans-serif;            
+      }
+      h1{
+        font-size: 6rem;
+        font-family: 'Montserrat-Black', sans-serif;
+        font-weight: 900;
+      }
+      h2{
+        padding: 0rem 0 2rem;
+        margin: 2rem 0 0;
+        font-family: 'Montserrat-Black', sans-serif;
+        font-weight: 900;
+      }
+      .colored-section{
+        background-color: #f6d728;
+      }
+      .container-fluid{
+        padding: 7% 15%;
+      }
+      #title .container-fluid{
+        padding: 3% 15% 5%;
+        text-align: left;
+      }
+      .navbar{
+        padding: 0 0 4.5rem;
+      }
+      .navbar-brand{
+        font-family: 'Ubuntu';
+        font-size: 2.5rem;
+        font-weight: bold;
+      }
+      .nav-item{
+        padding: 0 18px;
+      }
+      .nav-link{
+        font-size: 1.4rem;
+      }
+      .big-heading {
+        font-size: 3.5rem;
+        line-height: 1.5;
+        font-family: 'Montserrat-Black', sans-serif;
+        font-weight: 900;
+      }
+      .download-button {
+        margin: 5% 3% 5% 0;
+      }
+      .title-image{
+        width: 75%;
+        margin-left: 50px;
+      }
+      .title-features{
+        margin-bottom: 2rem;
+      }
+      .banner-container{
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 100px;
+      }
+      .title-secondary{
+        margin: 50px 0;
+      }
+
+      .location-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        margin: auto;
+        width: 100%;
+      }
+      .location-container .location-input{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex: 1;
+        font-size: 18px;
+        width: 100%;
+        height: 60px;
+        padding: 0 15px;
+        border-radius: 15px;
+        margin-right: 20px;
+        border: 2px solid;
+        max-width: 580px;
+        background-color: #fff;
+      }
+      input{
+        border: none;
+        appearance: none;
+        border-color: #fff;
+        background-color: #fff;
+        width: 100%;
+        outline: none;
+      }
+      .pricing-section{
+        padding: 100px;
+      }
+      .section-heading{
+        font-size: 3.5rem;
+        line-height: 1.5;
+      }
+      .white-section{
+        background-color: snow;
+      }
+      .footer-icon{
+        padding: 2% 1%;
+      }
+      .footer-par{
+        color: #8f8f8f;
+      }
+    
+    </style>
+
+      <section class="colored-section" id="title">
+        <div class="container-fluid">
+    
+          <!-- Nav Bar -->
+    
+          <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" href="">MASS</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    
+              <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#footer">Contact</a>
+                </li>
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="#cta">Download</a>
+                </li>
+              </ul>
+    
+            </div>
+          </nav>
+    
+          <!-- Title -->
+          <div class="row">
+            <div class="col-lg-6">
+              <h1 class="big-heading">Encuentra el mejor lugar donde comprar.</h1>
+              <button type="button" class="btn btn-dark btn-lg download-button"><i class="fab fa-apple"></i> Download</button>
+              <button type="button" class="btn btn-outline-light btn-lg download-button"><i class="fab fa-google-play"></i> Download</button>
+            </div>
+            <div class="col-lg-6" class="div-image-cs">
+              <img class="title-image" src="../static/images/mass_logo.png" alt="unknown image">
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Buscador -->
+      <section class="white-section" id="Buscador-principal">
+        <app-banner class="container-fluid">
+          <div class="banner-container">
+            <div class="banner guest-banner">
+              <div class="title-secondary">
+                <h1 class="bold ng-star-inserted" style="font-size: 40px;">Busca el producto que quieres al instante. </h1>
+              </div>
+            </div>
+            <div class="">
+              <div class="">
+                  <a class="btn btn-primary btn-lg" href="/catalogo" role="button">Ver catálogo</a>
+              </div>
+            </div>
+          </div>
+        </app-banner>
+      </section>
+
+      <!-- Features -->
+      <section id="features">
+
+        <div class="container-fluid">
+          <h1 class="title-features">Mass</h1>
+          <h2>Encuentre el producto que necesita al precio más bajo.</h2>
+          <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+         
+
+        </div>
+      </section>
+        
+      <!-- Pricing -->
+      <section class="pricing-section white-section" id="pricing">
+        <h2 class="section-heading">Plans for all budgets</h2>
+        <p>Simple y cómodos precios para usted.</p>
+
+      </section>
+
+      <!-- Call to Action -->
+      <section id="cta">
+        <div class="container-fluid">
+          <h2>Vea toda la información que tenemos para ofrecerle.</h2>
+          
+        </div>
+
+      </section>
+
+      <!-- Footer -->
+      <section class="white-section" id="footer">
+        <div class="container-fluid">
+          <i class="footer-icon fab fa-twitter"></i>
+          <i class="footer-icon fab fa-facebook-f"></i>
+          <i class="footer-icon fab fa-instagram"></i>
+          <i class="footer-icon fas fa-envelope"></i>
+          <p class="footer-par">© Copyright 2020 MASS</p>
+        </div>
+      </section>
+
+  </body>
+</html>
