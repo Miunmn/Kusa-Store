@@ -1,4 +1,5 @@
 import time
+import bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, jsonify, request, flash, redirect, url_for
 from flask_login import login_required, current_user, login_user, logout_user
@@ -10,6 +11,8 @@ from sqlalchemy.sql.base import NO_ARG
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Length, EqualTo
 from flask_wtf.csrf import CsrfProtect
+import json
+
 
 from forms import RegisterForm, ProductForm
 csrf = CsrfProtect()
@@ -51,12 +54,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     username = db.Column(db.String, nullable=False)
-    password = db.Column(db.String)
+    hash = db.Column(db.Text, nullable=False)
+    #password = db.Column(db.String)
 
-    def __init__(self,name, username, password):
+    def __init__(self,name, username, hash):
         self.name = name
         self.username = username
-        self.password = password
+        self.hash = hash
 
     def is_authenticated(self):
         return True
@@ -91,12 +95,12 @@ class Producto(db.Model):
 
 def database_initialization_sequence():
     db.create_all()
-    #creacion de usuarios ya que siempre que se detiene el docker se borra todo
-    user1 = User( "Esteban","ZzAZza","testpassword")
-    user2 = User("Jose","josedlz","testpassword")
-    user3 = User("alien","idgaf","testpassword")
-    db.session.add_all([user1,user2,user3])
     db.session.commit()
+    #creacion de usuarios ya que siempre que se detiene el docker se borra todo
+    '''user1 = User( "Esteban","ZzAZza","testpassword")
+    user2 = User("Jose","josedlz","testpassword")
+    user3 = User("alien","idgaf","testpassword")'''
+    #db.session.add_all([user1,user2,user3])
 
 
 
@@ -184,10 +188,12 @@ def signup():
     form = RegisterForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
+            password = request.form['password']
+            hashedvalue = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             user = User(
                 name=request.form['name'],
                 username=request.form['username'],
-                password=request.form['password']
+                hash=hashedvalue
             )
             
             db.session.add(user)
@@ -201,17 +207,21 @@ def signup():
     return render_template('register.html',  error=error)
 
 # Login view
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login', methods=['GET','POST'])
 def login():
     errormessage = ""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        print('password: ',password)
+        print('password: ',password)
+        print('password: ',password)
+        print('password: ',password)
         user = User.query.filter_by(username=username).first()
         if user is None:
             errormessage = 'No existe el usuario'
         else: 
-            if user.password == password:
+            if bcrypt.checkpw(password.encode('utf-8'), user.hash):
                 login_user(user)
                 return redirect(url_for('.viewcatalogo'))
             else:
