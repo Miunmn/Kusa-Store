@@ -1,30 +1,20 @@
-from itertools import product
-from os import access, name
-import datetime
-
-from flask_sqlalchemy import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, Float, String, Sequence, DateTime, ForeignKey, Table, Text, Boolean
-from sqlalchemy.sql.expression import null
+from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
 
-from forms import RegisterForm, ProductForm
 
-#from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
-
-import bcrypt
-from flask_rbac import RoleMixin
-
-from flask import Flask, render_template, flash, request, redirect, sessions, url_for, jsonify
+from flask import Flask, render_template, flash, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_rbac import RBAC
 
 
-from flask_login import login_required, current_user, login_user, logout_user , AnonymousUserMixin
+from flask_login import login_required, current_user, login_user, logout_user
 from flask_login import LoginManager
 from flask_login import current_user
 
 from flask_wtf import CSRFProtect
+
+from forms import *
 
 
 csrf = CSRFProtect()
@@ -38,19 +28,16 @@ login_manager.init_app(app)
 
 csrf.init_app(app)
 db = SQLAlchemy(app)
-#rbac = RBAC(app)
 
 migrate = Migrate(app, db)
 
-from flask import session
-    
 Base = db.Model
 
 ACCESS = {
     'client': 1,
     'admin': 2
 }
-#user_manager = UserManager(app, db, Usuario)
+
 
 class Usuario(Base):
     __tablename__ = 'usuario'
@@ -60,7 +47,7 @@ class Usuario(Base):
     access = Column(Integer, nullable=False)
     compras = relationship('Compra', back_populates='usuario', lazy=True)
 
-    def __init__(self, username, password,access):
+    def __init__(self, username, password, access):
         self.username = username
         self.password = password
         self.access = access
@@ -82,7 +69,8 @@ class Usuario(Base):
 
     def __repr__(self):
         return '<name - {}>'.format(self.username)
-    
+
+
 class Categoria(Base):
     __tablename__ = 'categoria'
 
@@ -117,7 +105,7 @@ class Subcategoria(Base):
 # Many to Many between Compra - Producto
 compra_producto = Table(
     'compra_producto', Base.metadata,
-    Column('compra_id', Integer, ForeignKey  ('compra.id')),
+    Column('compra_id', Integer, ForeignKey('compra.id')),
     Column('producto_id', Integer, ForeignKey('producto.id'))
 )
 
@@ -129,7 +117,7 @@ class Producto(Base):
     nombre = Column(String(255), nullable=False)
     precio = Column(Float, nullable=False)
     descripcion = Column(String(255))
-    img_url =  Column(String(255),nullable=False)
+    img_url = Column(String(255), nullable=False)
     stock = Column(Integer)
 
     # For Many to Many relationship with Subcategoria
@@ -155,73 +143,73 @@ class Compra(Base):
     productos = relationship(
         'Producto', secondary=compra_producto, back_populates="compras")
 
+
+@app.errorhandler(500)
+def serverError(error):
+    return render_template('500.html')
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.filter(Usuario.id == str(user_id)).first()
 
-# User Create
-def create_user():
-    pass
+
+def is_admin(user):
+    return user is not None and user.access == ACCESS['admin']
 
 
-# User Retrieve
-def retrieve_user():
-    pass
+def is_client(user):
+    return user is not None and user.access == ACCESS['client']
 
-
-# User Update
-def update_user():
-    pass
-
-def ifadmin(user):
-    return user.access == ACCESS['admin']
-
-def ifclient(user):
-    return user.access == ACCESS['client']
 
 # only for admins
 # Product Create
-#@roles_required('Admin')
-@app.route('/createproduct', methods=['GET','POST'])
+@app.route('/createproduct', methods=['GET', 'POST'])
 def create_product():
-    mensaje = None
     user = current_user
-    if user.is_authenticated:
-        if ifclient(user):
-            return redirect(url_for('.index'))
-        if request.method == 'POST':
-            if ifadmin(user):
-                producto = Producto(
-                    nombre=request.form['nombre'],
-                    precio=request.form['precio'],
-                    descripcion=request.form['descripcion'],
-                    stock=request.form['stock']
-                    #agregar img_url
-                )
-                db.session.add(producto)
-                db.session.commit()
-                mensaje = "Producto agregado"
-                return render_template('agregarproducto.html', mensaje=mensaje)
-        return render_template('agregarproducto.html', mensaje=mensaje)
-    else:
+    if not is_admin(user):
         return redirect(url_for('.index'))
 
-# Product Retrieve
-def retrieve_product():
-    pass
+    if request.method == 'GET':
+        return render_template('agregarproducto.html', mensaje=None)
 
-@app.route('/updateproduct', methods=['GET','POST'])
+    if request.method != 'POST':
+        abort(500)
+
+    flask_form = CreateProductForm(request.form)
+
+    if not flask_form.validate_on_submit():
+        return redirect(url_for('.index'))
+
+    try:
+        producto = Producto(
+            nombre=request.form['nombre'],
+            precio=request.form['precio'],
+            descripcion=request.form['descripcion'],
+            stock=request.form['stock']
+            # agregar img_url
+        )
+        db.session.add(producto)
+        db.session.commit()
+        return render_template('agregarproducto.html', mensaje='Producto agregado')
+
+    except Exception:
+        db.session.rollback()
+        abort(500)
+
+
+@app.route('/updateproduct', methods=['GET', 'POST'])
 def update_product():
     mensaje = None
     user = current_user
     if user.is_authenticated:
-        if ifclient(user):
-            return redirect(url_for('.index',mensaje=mensaje))
+        if is_client(user):
+            return redirect(url_for('.index', mensaje=mensaje))
         if request.method == 'POST':
             if request.form['nombre'] == "":
                 mensaje = "Especifique el nombre del producto"
             else:
-                if ifadmin(user):
+                if is_admin(user):
                     name = request.form['nombre']
                     product = Producto.query.filter_by(nombre=name).first()
                     if product is not None:
@@ -235,8 +223,8 @@ def update_product():
                         mensaje = "Producto actualizado"
                     else:
                         mensaje = "Producto inexistente"
-                    return render_template('actualizar.html',mensaje=mensaje)
-        return render_template('actualizar.html',mensaje=mensaje)
+                    return render_template('actualizar.html', mensaje=mensaje)
+        return render_template('actualizar.html', mensaje=mensaje)
     else:
         return redirect(url_for('.index'))
 
@@ -248,7 +236,7 @@ def delete_product():
         user = current_user
         mensaje = None
         if user.is_authenticated:
-            if ifadmin(user):
+            if is_admin(user):
                 nombre = request.args['name']
                 producto = Producto.query.filter_by(nombre=nombre).first()
                 if producto is not None:
@@ -257,6 +245,7 @@ def delete_product():
                     mensaje = "Eliminado con éxito"
                     return redirect(url_for('.index', mensaje=mensaje))
         return redirect(url_for('.index', mensaje=mensaje))
+
 
 @app.route('/singleproduct', methods=['GET'])
 def singleproduct():
@@ -271,12 +260,14 @@ def singleproduct():
         return redirect(url_for('.index', mensaje=mensaje))
     return redirect(url_for('.index'))
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     flash('You were logged out.')
     return redirect(url_for('.login'))
+
 
 @app.route('/')
 def index():
@@ -286,48 +277,20 @@ def index():
     user = current_user
     if user.is_authenticated:
         print("USERRR USUARIO")
-        if ifadmin(user):
+        if is_admin(user):
             print("USER ADMIN")
             ifadmin_ = "ADMIN"
-        elif ifclient(user):
+        elif is_client(user):
             print("USER CLIENTE")
             ifcliente_ = "CLIENTE"
     else:
         print(user)
     return render_template(
-        'shop.html', 
+        'shop.html',
         allproducts=allproducts,
         ifadmin=ifadmin_,
         ifcliente=ifcliente_
     )
-
-'''
-@app.route('/signupadmin', methods=['GET', 'POST'])
-def signup():
-    error = None
-    form = RegisterForm(request.form)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            user_ = Usuario.query.filter_by(username=request.form['username']).first()
-            if user_ is not None:
-                error = 'Username ya utilizado'
-            else:
-                password = request.form['password']
-                user = Usuario(
-                    username=request.form['username'],
-                    password=password,
-                    access=ACCESS['admin']
-                )                
-                db.session.add(user)
-                db.session.commit()
-            
-                login_user(user)
-            return redirect(url_for('.index'))
-        else:
-            flash(form.errors)
-    else:
-        error = 'Invalid data'       
-    return render_template('register.html',  error=error)'''
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -336,27 +299,29 @@ def signupcliente():
     form = RegisterForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            user_ = Usuario.query.filter_by(username=request.form['username']).first()
+            user_ = Usuario.query.filter_by(
+                username=request.form['username']).first()
             if user_ is not None:
                 error = 'Username ya utilizado'
             else:
                 user = Usuario(
-                username=request.form['username'],
-                password=request.form['password'],
-                access=ACCESS['client']
+                    username=request.form['username'],
+                    password=request.form['password'],
+                    access=ACCESS['client']
                 )
                 db.session.add(user)
-                db.session.commit()            
+                db.session.commit()
 
                 login_user(user)
             return redirect(url_for('.index'))
         else:
             flash(form.errors)
     else:
-        error = 'Invalid data'       
+        error = 'Invalid data'
     return render_template('register.html', error=error)
 
-@app.route('/login', methods=['GET','POST'])
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     errormessage = ""
     user = current_user
@@ -377,7 +342,8 @@ def login():
                 errormessage = "Contraseña equivocada"
     return render_template('login.html', errormessage=errormessage)
 
+
 if __name__ == '__main__':
     db.create_all()
-    #setup()
+    # setup()
     app.run(host="127.0.0.1", port=8080, debug=True)

@@ -17,3 +17,7 @@ class ProductForm(FlaskForm):
     #descripcion = StringField('descripcion', validators=[DataRequired(), Length(min=3, max=25)])
     #url = [DataRequired(), URL(message='Must be a valid URL')]
     #precio = FloatField('precio',validators=[DataRequired(), Range(3.0,25.0)] )
+
+
+class CreateProductForm(FlaskForm):
+    pass
