@@ -157,11 +157,11 @@ def load_user(user_id):
 
 
 def is_admin(user):
-    return user is not None and user.access == ACCESS['admin']
+    return user is not None and user.is_authenticated() and user.access == ACCESS['admin']
 
 
 def is_client(user):
-    return user is not None and user.access == ACCESS['client']
+    return user is not None and user.is_authenticated() and user.access == ACCESS['client']
 
 
 def mensajeforms(errorforms):
@@ -277,11 +277,11 @@ def singleproduct():
         name = request.args['name']
         producto = Producto.query.filter_by(nombre=name).first()
         if producto is None:
-            mensaje = "No existe producto"
+            return redirect(url_for('.index', mensaje=mensaje), code=404)
         else:
             return render_template('shop-single.html', mensaje=mensaje, producto=producto)
-        return redirect(url_for('.index', mensaje=mensaje))
-    return redirect(url_for('.index'))
+
+    return redirect(url_for('.index'), code=400)
 
 
 @app.route('/logout')
@@ -398,8 +398,20 @@ def aux_buy_product_list(user, cart):
 
 @app.route('/buy', methods=['POST'])
 def buy_cart():
-    content = request.json
-    print(content)
+    user = current_user
+
+    if not is_client(user):
+        return redirect(url_for(".index"), code=400)
+
+    cart = request.json['data']
+    bought, failed = aux_buy_product_list(user, cart)
+    failed_str = ' and '.join((str(product.nombre) for product in failed))
+    success, fail = (
+        'Bought all products successfully',
+        'There were errors while trying to buy: ' + failed_str
+    )
+
+    return success if len(failed) > 0 else fail
 
 
 if __name__ == '__main__':
