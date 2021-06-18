@@ -4,6 +4,7 @@
 *.pyc
 *.pyo
 env/
+debepe/
 venv/
 .venv/
 env*

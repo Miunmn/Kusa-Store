@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from flask import Flask, render_template, flash, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.base import NO_ARG
 from flask_migrate import Migrate
 
 
@@ -162,11 +163,28 @@ def is_client(user):
     return user is not None and user.access == ACCESS['client']
 
 
+def mensajeforms(errorforms):
+    retorno = ""
+    if errorforms.get('nombre') is not  None:
+        retorno = retorno + " Nombre"
+    if errorforms.get('descripcion') is not   None:
+        retorno = retorno + " Descripcion"
+    if errorforms.get('stock') is not  None:
+        retorno = retorno + " Stock"
+    if errorforms.get('precio') is not  None:
+        retorno = retorno + " Precio"
+    if errorforms.get('img_url') is not   None:
+        retorno = retorno + " Url"
+    return retorno
+
 # only for admins
 # Product Create
 @app.route('/createproduct', methods=['GET', 'POST'])
 def create_product():
     user = current_user
+    if not user.is_authenticated:
+        return redirect(url_for('.index'))
+
     if not is_admin(user):
         return redirect(url_for('.index'))
 
@@ -179,15 +197,17 @@ def create_product():
     flask_form = CreateProductForm(request.form)
 
     if not flask_form.validate_on_submit():
-        return redirect(url_for('.index'))
-
+        mensaje = "Los siguiente campos son incorrectos: "
+        mensaje = mensaje +  mensajeforms(flask_form.errors)
+        return render_template('agregarproducto.html', mensaje=mensaje)
+ 
     try:
         producto = Producto(
             nombre=request.form['nombre'],
             precio=request.form['precio'],
             descripcion=request.form['descripcion'],
-            stock=request.form['stock']
-            # agregar img_url
+            stock=request.form['stock'],
+            img_url=request.form['img_url']
         )
         db.session.add(producto)
         db.session.commit()

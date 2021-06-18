@@ -15,3 +15,5 @@ function logout(){
     sessionStorage.removeItem('products')
     window.location = '/logout'
 }
+
+
