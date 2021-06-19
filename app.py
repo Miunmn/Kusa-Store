@@ -411,7 +411,7 @@ def buy_cart():
         'There were errors while trying to buy: ' + failed_str
     )
 
-    return success if len(failed) > 0 else fail
+    return success if len(failed) == 0 else fail
 
 
 if __name__ == '__main__':
