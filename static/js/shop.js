@@ -127,13 +127,13 @@ function comprar(){
         for(let i = 0 ; i < productlist.length; i++){
             payload_[productlist[i]] = 1
         }
-        console.log(payload_)
+    console.log(payload_)
     try{
         $.ajax({
             url: '/buy',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(payload_),
+            data: payload_,
             dataType: 'json'
         }).done(function (response){
             setTimeout(function(){
