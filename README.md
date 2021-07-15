@@ -1,4 +1,6 @@
 # Kusa Store
+![image](https://user-images.githubusercontent.com/40151035/125713718-56ffeb11-1510-4ca2-bef7-2be0609697ee.png)
+![image](https://user-images.githubusercontent.com/40151035/125713790-236b2adc-b914-4c03-8483-7ef7e6becb3e.png)
 
 ## Integrantes
 ```
