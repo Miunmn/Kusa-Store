@@ -96,16 +96,16 @@ def insertar_subcategoria():
 
 def insertar_usuarios():
     # 4 admins
-    db.session.add(Usuario(username='esteban', password='1234567', access=2))
-    db.session.add(Usuario(username='josedlz', password='1234567', access=2))
-    db.session.add(Usuario(username='pulsatio', password='1234567', access=2))
-    db.session.add(Usuario(username='elalien', password='1234567', access=2))
+    db.session.add(Usuario(username='esteban', password='1234567', access=2, balance=0))
+    db.session.add(Usuario(username='josedlz', password='1234567', access=2, balance=0))
+    db.session.add(Usuario(username='pulsatio', password='1234567', access=2, balance=0))
+    db.session.add(Usuario(username='elalien', password='1234567', access=2, balance=0))
 
     # 4 clientes
-    db.session.add(Usuario(username='client1', password='1234567', access=1))
-    db.session.add(Usuario(username='client2', password='1234567', access=1))
-    db.session.add(Usuario(username='client3', password='1234567', access=1))
-    db.session.add(Usuario(username='client4', password='1234567', access=1))
+    db.session.add(Usuario(username='client1', password='1234567', access=1, balance=1000))
+    db.session.add(Usuario(username='client2', password='1234567', access=1, balance=1000))
+    db.session.add(Usuario(username='client3', password='1234567', access=1, balance=1000))
+    db.session.add(Usuario(username='client4', password='1234567', access=1, balance=1000))
 
 
 if __name__ == "__main__":

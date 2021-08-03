@@ -104,18 +104,25 @@ function addtocart(item){
             console.log("This item already exists");
         }
      
-        localStorage.setItem('products',JSON.stringify(productlist))
+        localStorage.setItem('products', JSON.stringify(productlist))
         //updatecarrito(item)
     }else{
         let productlist = [item]
         updatecarrito(item)
         console.log(productlist)
-        localStorage.setItem('products',JSON.stringify(productlist))
+        localStorage.setItem('products', JSON.stringify(productlist))
     }
 }
 function logout(){
     localStorage.removeItem('products')
     window.location = '/logout'
+}
+function findduplicates(productlist, item){
+    var indexes = [], i = -1;
+    while ((i = productlist.indexOf(item, i+1)) != -1){
+        indexes.push(i);
+    }
+    return indexes.length;
 }
 
 
@@ -124,36 +131,43 @@ function comprar(){
     let products = localStorage.getItem('products')
     if (products != undefined){
         let productlist = JSON.parse(products)
+        let productos = []
         for(let i = 0 ; i < productlist.length; i++){
-            payload_[productlist[i]] = 1
+            let obj = {
+                'name': productlist[i],
+                'quantity': findduplicates(productlist, productlist[i])
+            }
+            productos.push(obj)
         }
-    console.log(payload_)
-    try{
-        $.ajax({
-            url: '/buy',
-            type: 'POST',
-            contentType: 'application/json',
-            data: payload_,
-            dataType: 'json'
-        }).done(function (response){
-            setTimeout(function(){
+        console.log(payload_)
+        try{
+            fetch('/buy', {
+                method: 'POST',
+                body: JSON.stringify(productos),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(response){
+                return response.json()
+            }).then(function (response){
+                console.log("response: ",response['message'])
+                setTimeout(function(){
+                    UIkit.notification({
+                    message: response['message'],
+                    status: 'danger'
+                    })
+                }, 1000)
+            }).catch(function (response){
+                console.log("response: ",response)
                 UIkit.notification({
-                message: response,
-                status: 'danger'
-                })
-            }, 1000)
-        }).fail(function (response){
-            UIkit.notification({
-                message: response,
-                status: 'danger'
-                })
-        });
+                    message: response.message,
+                    status: 'danger'
+                    })
+            });
     }catch (exception)
     {
         console.log(exception)
     }
-    }else{
-
     }
 
 

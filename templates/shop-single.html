@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Moschino | Minimalist Free HTML Portfolio by WowThemes.net</title>
+    <title>Kusa Store</title>
     <link rel='stylesheet' href={{ url_for( 'static', filename='css/woocommerce-layout.css' )}} type='text/css' media='all' />
     <link rel='stylesheet' href={{ url_for( 'static', filename='css/woocommerce-smallscreen.css' )}} type='text/css' media='only screen and (max-width: 768px)' />
     <link rel='stylesheet' href={{ url_for( 'static', filename='css/woocommerce.css')}} type='text/css'  media='all' />
@@ -19,8 +19,8 @@
         <div class="container">
             <header id="masthead" class="site-header">
                 <div class="site-branding">
-                    <h1 class="site-title"><a href="" rel="home">Moschino</a></h1>
-                    <h2 class="site-description">Minimalist Portfolio HTML Template</h2>
+                    <h1 class="site-title"><a href="" rel="home">Kusa Store</a></h1>
+                    <h2 class="site-description">Shop a large selection of officially licensed anime figures</h2>
                 </div>
                 <nav id="site-navigation" class="main-navigation">
                     <button class="menu-toggle">Menu</button>
@@ -62,7 +62,7 @@
                                         <h1 itemprop="name" class="product_title entry-title">{{ producto.nombre }}</h1>
                                         <div class="woocommerce-product-rating" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
                                             <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                                            <a href="#reviews" class="woocommerce-review-link" rel="nofollow">(<span itemprop="reviewCount" class="count">2</span> customer reviews)</a>
+                                            <a href="#reviews" class="woocommerce-review-link" rel="nofollow">(<span itemprop="reviewCount" class="count">{{ producto.stock }}</span> available)</a>
                                         </div>
                                         <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                             <p class="price">

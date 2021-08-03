@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
 
 
-from flask import Flask, render_template, flash, request, redirect, url_for, abort
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.base import NO_ARG
 from flask_migrate import Migrate
@@ -47,12 +47,14 @@ class Usuario(Base):
     username = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False, server_default='')
     access = Column(Integer, nullable=False)
+    balance = Column(Integer, nullable=False)
     compras = relationship('Compra', back_populates='usuario', lazy=True)
 
-    def __init__(self, username, password, access):
+    def __init__(self, username, password, access, balance):
         self.username = username
         self.password = password
         self.access = access
+        self.balance = balance
 
     def is_authenticated(self):
         return True
@@ -178,8 +180,6 @@ def mensajeforms(errorforms):
         retorno = retorno + " Url"
     return retorno
 
-# only for admins
-# Product Create
 
 
 @app.route('/createproduct', methods=['GET', 'POST'])
@@ -367,20 +367,19 @@ def login():
 
 
 def aux_buy_product_list(user, cart):
-    to_buy = [(Producto.query.with_for_update(of=Producto).get(i), count)
-              for i, count in cart]
-
     bought = []
     fail = []
-    for product, count in to_buy:
+    for product in cart:
+        print(product)
+        producto = Producto.query.filter_by(nombre=product.get('name')).first()
         try:
-            if product.stock > count:
-                product.stock -= count
-                bought.append(product)
+            if producto.stock > product.get('quantity'):
+                producto.stock -= product.get('quantity')
+                bought.append(producto)
             else:
-                fail.append(product)
+                fail.append(producto)
         except IntegrityError:
-            fail.append(product)
+            fail.append(producto)
 
     if len(bought) > 0:
         compra = Compra(
@@ -395,6 +394,21 @@ def aux_buy_product_list(user, cart):
 
     return bought, fail
 
+def checkifenoughbalance(user, cart):
+    bought = []
+    fail = []
+    totalprice = 0
+    for product in cart:
+        producto = Producto.query.filter_by(nombre=product.get('name')).first()
+        try:
+            totalprice = totalprice +  totalprice.precio 
+            if totalprice > user.balance:
+                bought.append(producto)
+            else:
+                return 'No hay suficiente saldo en su cuenta'
+        except IntegrityError:
+            fail.append(producto)
+    return ''
 
 @app.route('/buy', methods=['POST'])
 def buy_cart():
@@ -403,15 +417,24 @@ def buy_cart():
     if not is_client(user):
         return redirect(url_for(".index"), code=400)
 
-    cart = request.json['data']
+    cart = request.get_json()
+    messagebalance = checkifenoughbalance(user, cart)
+    if messagebalance != '':
+        obj = {}
+        obj['message'] = messagebalance
+        return jsonify(obj)
+
     bought, failed = aux_buy_product_list(user, cart)
     failed_str = ' and '.join((str(product.nombre) for product in failed))
     success, fail = (
         'Bought all products successfully',
         'There were errors while trying to buy: ' + failed_str
     )
-
-    return success if len(failed) == 0 else fail
+    message = success if len(failed) == 0 else fail
+    print("message: ",message)
+    obj = {}
+    obj['message'] = message
+    return jsonify(obj)
 
 
 if __name__ == '__main__':
