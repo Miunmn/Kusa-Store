@@ -17,7 +17,7 @@
 </head>
 {% if current_user.is_authenticated %}
 <nav class="uk-navbar-container" uk-navbar>
-    {% if ifadmin %}
+    {% if current_user.is_admin %}
     <div class="uk-navbar-left">
         <ul class="uk-navbar-nav">
             <li><a href="/createproduct">Crear producto</a></li>
@@ -90,7 +90,7 @@
                                 <ul class="products">
                                     {% if allproducts %} {% for product in allproducts %}
                                     <li class="product">
-                                        {% if ifadmin %}
+                                        {% if current_user.is_admin %}
                                             <a href="/deleteproduct?name={{product.nombre}}"><span style="margin-left: 150px;" uk-icon="icon: close; ratio: 1"></span></a>
                                         {% endif %}
                                         <a href="/singleproduct?name={{product.nombre}}">
@@ -100,7 +100,7 @@
                                         </a>
                                         {% if not current_user.is_authenticated %}
                                             <a href="/login" class="button">Add to cart</a>
-                                        {% elif ifcliente %}
+                                        {% elif not current_user.is_admin %}
                                             <a id="{{product.nombre}}"  class="button" onclick="addtocart(this.id)">Add to cart</a>
                                         {% endif %}
                                     </li>
