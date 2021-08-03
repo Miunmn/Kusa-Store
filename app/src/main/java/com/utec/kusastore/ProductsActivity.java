@@ -48,6 +48,7 @@ public class ProductsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getProductos();
     }
+
     public Activity getActivity(){
         return this;
     }
@@ -57,7 +58,7 @@ public class ProductsActivity extends AppCompatActivity {
         String productname = (String) view.getTag(R.id.tag_first);
         Map<String, String> message = new HashMap<>();
         message.put("producto", productname);
-        message.put("username",getIntent().getExtras().getString("username"));
+        message.put("username", getIntent().getExtras().getString("username"));
         JSONObject jsonMessage = new JSONObject(message);
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,

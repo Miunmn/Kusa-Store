@@ -5,4 +5,7 @@
     <string name="btn_login_hint">Iniciar Sesion</string>
     <string name="login">Login</string>
     <string name="buy">Buy!</string>
+    <string name="lema">Shop a large selection of officially licensed anime figures</string>
+    <string name="pregunta">Ya tienes cuenta? Inica sesion</string>
+    <string name="registrate_ahora">Registrate ahora!</string>
 </resources>

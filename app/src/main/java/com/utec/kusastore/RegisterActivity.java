@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    public void onLoginClicked(View view){
+    public void onRegisterClicked(View view){
         EditText txtUsername = (EditText) findViewById(R.id.txt_username_input);
         EditText txtPassword = (EditText) findViewById(R.id.txt_password_input);
         String username = txtUsername.getText().toString();
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                                     int role = response.getInt("role");
                                     int userId = response.getInt("userid");
 
-                                    goToDashboard(username, role, userId);
+                                    goToLogin();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -82,17 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void goToDashboard(String username, int role, int userId){
-        Intent intent;
-        intent = new Intent(this, ProductsActivity.class);
-        /*if(role == 2){
-            intent = new Intent(this, AdminActivity.class);
-        }else {
-            intent = new Intent(this, UserActivity.class);
-        }*/
-        intent.putExtra("username", username);
-        intent.putExtra("userId", userId);
-        intent.putExtra("role", role);
-        startActivity(intent);
+    public void goToLogin(){
+
     }
+
 }

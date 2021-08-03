@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KusaStore"
         android:usesCleartextTraffic="true">
+        <activity android:name=".RegisterActivity"/>
         <activity android:name=".ProductsActivity"/>
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
