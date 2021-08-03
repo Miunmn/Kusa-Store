@@ -53,16 +53,21 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             showMessage(response.getString("message"));
+                            if(response.getString("message").equals("Satisfactorio")){
+                                try {
+                                    String username = response.getString("username");
+                                    int role = response.getInt("role");
+                                    int userId = response.getInt("userid");
+                                    showMessage(response.getString("username"));
+                                    showMessage(response.getString("role"));
+                                    showMessage(response.getString("userid"));
+                                    goToDashboard(username, role, userId);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        try {
-                            String username = response.getString("username");
-                            int role = response.getInt("role");
-                            int userId = response.getInt("userid");
-                            goToDashboard(username, role, userId);
-                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -81,13 +86,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void goToDashboard(String username, int role, int userId){
         Intent intent;
-        if(role == 1){
+        intent = new Intent(this, ProductsActivity.class);
+        /*if(role == 2){
             intent = new Intent(this, AdminActivity.class);
         }else {
             intent = new Intent(this, UserActivity.class);
-        }
+        }*/
         intent.putExtra("username", username);
         intent.putExtra("userId", userId);
         intent.putExtra("role", role);
+        startActivity(intent);
     }
 }
