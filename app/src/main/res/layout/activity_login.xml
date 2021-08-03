@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="317dp"
+        android:layout_height="559dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginBottom="128dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/logo_id"
+            android:layout_width="match_parent"
+            android:layout_height="191dp"
+            app:srcCompat="@drawable/logo2"/>
+
+        <EditText
+            android:id="@+id/txt_username_input"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@android:dimen/app_icon_size"
+            android:inputType="text"
+            android:gravity="center"
+            android:hint="@string/txt_username"
+            android:layout_gravity="center"/>
+
+        <EditText
+            android:id="@+id/txt_password_input"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:inputType="textPassword"
+            android:layout_gravity="center"
+            android:hint="@string/txt_password_hint"
+            android:gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:onClick="onLoginClicked"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
