@@ -441,6 +441,25 @@ def buy_cart():
     return jsonify(obj)
 
 
+@app.route('/loginmobile', methods=['POST'])
+def loginmobile():
+    loginpayload = request.get_json()
+    response = {}
+    user = Usuario.query.filter_by(username=loginpayload['username']).first()
+    message = ""
+    if user is None:
+        message = 'No existe el usuario'
+    else:
+        if loginpayload['password'] == user.password:
+            message = "Satisfactorio"
+            response['username'] = user.username
+            response['role'] = user.access
+            response['userid'] = user.id
+        else:
+            message = "Contraseña equivocada"
+    response['message'] = message
+    return jsonify(response)
+
 @app.route('/products/get-all', methods=['GET'])
 def get_all():
     return jsonify([o.to_json() for o in Producto.query.all()])
@@ -451,7 +470,6 @@ def get_product(id):
     if product is None:
         return jsonify({ "found": False })
     return jsonify({ "found": True, "product": product.to_json() })
-
 
 
 if __name__ == '__main__':
