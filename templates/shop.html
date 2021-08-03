@@ -28,9 +28,9 @@
     <div class="uk-navbar-center">
         {{ current_user.username }}
         Rol:
-        {% if ifadmin %}
+        {% if current_user.is_admin %}
         Administrador
-        {% elif ifclient %}
+        {% else %}
         Client
         {% endif %}
     </div>
