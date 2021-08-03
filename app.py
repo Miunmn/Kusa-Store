@@ -308,12 +308,7 @@ def shop():
     if not current_user.is_authenticated:
         return redirect(url_for('.login'))
 
-    ifadmin_, ifcliente_ = '', ''
-    if current_user.is_admin:
-        ifadmin_ = "ADMIN"
-    else:
-        ifcliente_ = "CLIENTE"
-    return render_template('shop.html', allproducts=allproducts, ifadmin=ifadmin_, ifcliente=ifcliente_)
+    return render_template('shop.html', allproducts=allproducts)
 
 @app.route('/')
 def index():
