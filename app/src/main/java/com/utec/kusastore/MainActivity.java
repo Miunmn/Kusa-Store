@@ -58,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                     String username = response.getString("username");
                                     int role = response.getInt("role");
                                     int userId = response.getInt("userid");
-                                    showMessage(response.getString("username"));
-                                    showMessage(response.getString("role"));
-                                    showMessage(response.getString("userid"));
+
                                     goToDashboard(username, role, userId);
                                 } catch (JSONException e) {
                                     e.printStackTrace();

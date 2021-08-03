@@ -4,4 +4,5 @@
     <string name="txt_password_hint">Ingrese su contraseña</string>
     <string name="btn_login_hint">Iniciar Sesion</string>
     <string name="login">Login</string>
+    <string name="buy">Buy!</string>
 </resources>
