@@ -56,15 +56,19 @@ class Usuario(Base):
         self.access = access
         self.balance = balance
 
+    @property
     def is_authenticated(self):
         return True
 
+    @property
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
+    
     def get_id(self):
         return str(self.id)
 
@@ -132,6 +136,9 @@ class Producto(Base):
     compras = relationship(
         'Compra', secondary=compra_producto, back_populates="productos")
 
+    def to_json(self):
+        return {k:v for k, v in self.__dict__.items() if k != '_sa_instance_state'} 
+
 
 class Compra(Base):
     __tablename__ = 'compra'
@@ -159,11 +166,11 @@ def load_user(user_id):
 
 
 def is_admin(user):
-    return user is not None and user.is_authenticated() and user.access == ACCESS['admin']
+    return user is not None and user.is_authenticated and user.access == ACCESS['admin']
 
 
 def is_client(user):
-    return user is not None and user.is_authenticated() and user.access == ACCESS['client']
+    return user is not None and user.is_authenticated and user.access == ACCESS['client']
 
 
 def mensajeforms(errorforms):
@@ -435,6 +442,19 @@ def buy_cart():
     obj = {}
     obj['message'] = message
     return jsonify(obj)
+
+
+@app.route('/products/get-all', methods=['GET'])
+def get_all():
+    return jsonify([o.to_json() for o in Producto.query.all()])
+
+@app.route('/products/get/<id>', methods=['GET'])
+def get_product(id):
+    product = Producto.query.filter(Producto.id == id).first()
+    if product is None:
+        return jsonify({ "found": False })
+    return jsonify({ "found": True, "product": product.to_json() })
+
 
 
 if __name__ == '__main__':
