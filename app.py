@@ -68,6 +68,9 @@ class Usuario(Base):
     def is_anonymous(self):
         return False
 
+    @property
+    def is_admin(self):
+        return self.access == ACCESS['admin']
     
     def get_id(self):
         return str(self.id)
@@ -195,7 +198,7 @@ def create_product():
     if not user.is_authenticated:
         return redirect(url_for('.index'))
 
-    if not is_admin(user):
+    if not user.is_admin:
         return redirect(url_for('.index'))
 
     if request.method == 'GET':
@@ -299,28 +302,26 @@ def logout():
     return redirect(url_for('.login'))
 
 
+@app.route('/shop')
+def shop():
+    allproducts = Producto.query.all()
+    if not current_user.is_authenticated:
+        return redirect(url_for('.login'))
+
+    ifadmin_, ifcliente_ = '', ''
+    if current_user.is_admin:
+        ifadmin_ = "ADMIN"
+    else:
+        ifcliente_ = "CLIENTE"
+    return render_template('shop.html', allproducts=allproducts, ifadmin=ifadmin_, ifcliente=ifcliente_)
+
 @app.route('/')
 def index():
-    allproducts = Producto.query.all()
-    ifcliente_ = ""
-    ifadmin_ = ""
     user = current_user
-    if user.is_authenticated:
-        print("USERRR USUARIO")
-        if is_admin(user):
-            print("USER ADMIN")
-            ifadmin_ = "ADMIN"
-        elif is_client(user):
-            print("USER CLIENTE")
-            ifcliente_ = "CLIENTE"
-    else:
-        print(user)
-    return render_template(
-        'shop.html',
-        allproducts=allproducts,
-        ifadmin=ifadmin_,
-        ifcliente=ifcliente_
-    )
+    if not user.is_authenticated:
+        return redirect(url_for('.login'))
+    
+    return redirect(url_for('.shop'))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
