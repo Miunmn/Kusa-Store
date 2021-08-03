@@ -1,0 +1,4 @@
+com/utec/kusastore/MainActivity.java
+ com.utec.kusastore.MainActivity
+com/utec/kusastore/BuildConfig.java
+ com.utec.kusastore.BuildConfig
