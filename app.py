@@ -333,7 +333,8 @@ def signupcliente():
                 user = Usuario(
                     username=request.form['username'],
                     password=request.form['password'],
-                    access=ACCESS['client']
+                    access=ACCESS['client'],
+                    balance=1000
                 )
                 db.session.add(user)
                 db.session.commit()
@@ -454,6 +455,4 @@ def get_product(id):
 
 
 if __name__ == '__main__':
-    db.create_all()
-    # setup()
     app.run(host="127.0.0.1", port=8080, debug=True)
