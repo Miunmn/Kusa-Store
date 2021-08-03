@@ -101,7 +101,7 @@
                                         {% if not current_user.is_authenticated %}
                                             <a href="/login" class="button">Add to cart</a>
                                         {% elif not current_user.is_admin %}
-                                            <a id="{{product.nombre}}"  class="button" onclick="addtocart(this.id)">Add to cart</a>
+                                            <a id="{{product.nombre}}"  class="button" onclick="comprar(this.id)">Add to cart</a>
                                         {% endif %}
                                     </li>
                                     {% endfor %} {% endif %}

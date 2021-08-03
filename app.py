@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
 
 
-from flask import Flask, render_template, flash, request, redirect, url_for, abort, jsonify
+from flask import Flask, render_template, flash, request, redirect, url_for, abort, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.base import NO_ARG
 from flask_migrate import Migrate
@@ -71,7 +71,7 @@ class Usuario(Base):
     @property
     def is_admin(self):
         return self.access == ACCESS['admin']
-    
+
     def get_id(self):
         return str(self.id)
 
@@ -140,7 +140,7 @@ class Producto(Base):
         'Compra', secondary=compra_producto, back_populates="productos")
 
     def to_json(self):
-        return {k:v for k, v in self.__dict__.items() if k != '_sa_instance_state'} 
+        return {k: v for k, v in self.__dict__.items() if k != '_sa_instance_state'}
 
 
 class Compra(Base):
@@ -189,7 +189,6 @@ def mensajeforms(errorforms):
     if errorforms.get('img_url') is not None:
         retorno = retorno + " Url"
     return retorno
-
 
 
 @app.route('/createproduct', methods=['GET', 'POST'])
@@ -310,12 +309,13 @@ def shop():
 
     return render_template('shop.html', allproducts=allproducts)
 
+
 @app.route('/')
 def index():
     user = current_user
     if not user.is_authenticated:
         return redirect(url_for('.login'))
-    
+
     return redirect(url_for('.shop'))
 
 
@@ -370,27 +370,25 @@ def login():
     return render_template('login.html', errormessage=errormessage)
 
 
-def aux_buy_product_list(user, cart):
+def aux_buy_product_list(user, productjson):
     bought = []
     fail = []
-    for product in cart:
-        print(product)
-        producto = Producto.query.filter_by(nombre=product.get('name')).first()
-        try:
-            if producto.stock > product.get('quantity'):
-                producto.stock -= product.get('quantity')
-                bought.append(producto)
-            else:
-                fail.append(producto)
-        except IntegrityError:
+    producto = Producto.query.filter_by(nombre=productjson.get('producto')).first()
+    try:
+        if producto.stock > 0:
+            producto.stock -= 1
+            bought.append(producto)
+        else:
             fail.append(producto)
+    except IntegrityError:
+        fail.append(producto)
 
     if len(bought) > 0:
         compra = Compra(
             user_id=user.id,
             fecha=datetime.now(),
             productos=bought)
-
+        user.balance = user.balance - producto.precio
         db.session.add(compra)
         db.session.commit()
     else:
@@ -398,47 +396,60 @@ def aux_buy_product_list(user, cart):
 
     return bought, fail
 
-def checkifenoughbalance(user, cart):
+
+def checkifenoughbalance(user, productjson):
     bought = []
     fail = []
-    totalprice = 0
-    for product in cart:
-        producto = Producto.query.filter_by(nombre=product.get('name')).first()
-        try:
-            totalprice = totalprice +  totalprice.precio 
-            if totalprice > user.balance:
-                bought.append(producto)
-            else:
-                return 'No hay suficiente saldo en su cuenta'
-        except IntegrityError:
-            fail.append(producto)
+    producto = Producto.query.filter_by(nombre=productjson.get('producto')).first()
+    try:
+        if producto.precio < user.balance:
+            bought.append(producto)
+        else:
+            return 'No hay suficiente saldo en su cuenta'
+    except IntegrityError:
+        fail.append(producto)
     return ''
 
-@app.route('/buy', methods=['POST'])
-def buy_cart():
-    user = current_user
 
-    if not is_client(user):
-        return redirect(url_for(".index"), code=400)
-
-    cart = request.get_json()
-    messagebalance = checkifenoughbalance(user, cart)
+def aux_buy(user, jsonbuyproduct):
+    messagebalance = checkifenoughbalance(user, jsonbuyproduct)
     if messagebalance != '':
         obj = {}
         obj['message'] = messagebalance
         return jsonify(obj)
 
-    bought, failed = aux_buy_product_list(user, cart)
+    bought, failed = aux_buy_product_list(user, jsonbuyproduct)
     failed_str = ' and '.join((str(product.nombre) for product in failed))
     success, fail = (
         'Bought all products successfully',
         'There were errors while trying to buy: ' + failed_str
     )
     message = success if len(failed) == 0 else fail
-    print("message: ",message)
+    print("message: ", message)
     obj = {}
     obj['message'] = message
+
     return jsonify(obj)
+
+@app.route('/buy', methods=['POST'])
+def buyproduct():
+    user = current_user
+    if not is_client(user):
+        return redirect(url_for(".index"), code=400)
+    productjson = request.get_json()
+    return aux_buy(user, productjson)
+
+
+@app.route('/buymobile', methods=['POST'])
+def buyproductmobile():
+    productjson = request.get_json()
+    try: 
+        user = Usuario.query.filter_by(username=productjson.get('username')).first()
+        return aux_buy(user, productjson)
+    except IntegrityError:
+        return Response(
+        "Usario no encontrado",
+        status=400)
 
 
 @app.route('/loginmobile', methods=['POST'])
@@ -460,16 +471,18 @@ def loginmobile():
     response['message'] = message
     return jsonify(response)
 
+
 @app.route('/products/get-all', methods=['GET'])
 def get_all():
     return jsonify([o.to_json() for o in Producto.query.all()])
+
 
 @app.route('/products/get/<id>', methods=['GET'])
 def get_product(id):
     product = Producto.query.filter(Producto.id == id).first()
     if product is None:
-        return jsonify({ "found": False })
-    return jsonify({ "found": True, "product": product.to_json() })
+        return jsonify({"found": False})
+    return jsonify({"found": True, "product": product.to_json()})
 
 
 if __name__ == '__main__':
