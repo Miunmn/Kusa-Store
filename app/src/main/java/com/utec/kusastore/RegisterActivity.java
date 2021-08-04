@@ -46,14 +46,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                "http://10.0.2.2:8080/loginmobile",
+                "http://10.0.2.2:8080/signupmobile",
                 jsonMessage,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             showMessage(response.getString("message"));
-                            if(response.getString("message").equals("Satisfactorio")){
+                            if(response.getString("message").equals("Registrado correctamente")){
                                 goToLogin();
                             }
                         } catch (JSONException e) {
