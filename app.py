@@ -128,7 +128,7 @@ class Producto(Base):
     nombre = Column(String(255), nullable=False)
     precio = Column(Float, nullable=False)
     descripcion = Column(String(255))
-    img_url = Column(String(255), nullable=False)
+    img_url = Column(String(1024), nullable=False)
     stock = Column(Integer)
 
     # For Many to Many relationship with Subcategoria
@@ -319,6 +319,26 @@ def index():
     return redirect(url_for('.shop'))
 
 
+@app.route('/signupmobile', methods=['POST'])
+def signupmobile():
+    registerinfo = request.get_json()
+    user_ = Usuario.query.filter_by(username=registerinfo.get('username')).first()
+    response = {}
+    if user_ is not None:
+        response['message'] = 'Username ya utilizado'
+    else:
+        user = Usuario(
+            username=registerinfo.get('username'),
+            password=registerinfo.get('password'),
+            access=ACCESS['client'],
+            balance=1000
+        )
+        db.session.add(user)
+        db.session.commit()
+        response['message'] = 'Registrado correctamente'
+    return jsonify(response)
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signupcliente():
     error = None
@@ -421,7 +441,7 @@ def aux_buy(user, jsonbuyproduct):
     bought, failed = aux_buy_product_list(user, jsonbuyproduct)
     failed_str = ' and '.join((str(product.nombre) for product in failed))
     success, fail = (
-        'Bought all products successfully',
+        'Se realizó la compra correctamente',
         'There were errors while trying to buy: ' + failed_str
     )
     message = success if len(failed) == 0 else fail

@@ -99,9 +99,9 @@
                                             <span class="price"><span class="amount">${{ product.precio }}</span></span>
                                         </a>
                                         {% if not current_user.is_authenticated %}
-                                            <a href="/login" class="button">Add to cart</a>
+                                            <a href="/login" class="button">Comprar producto</a>
                                         {% elif not current_user.is_admin %}
-                                            <a id="{{product.nombre}}"  class="button" onclick="comprar(this.id)">Add to cart</a>
+                                            <a id="{{product.nombre}}"  class="button" onclick="comprar(this.id)">Comprar producto</a>
                                         {% endif %}
                                     </li>
                                     {% endfor %} {% endif %}
@@ -110,15 +110,6 @@
                         </div>
 
 
-                    </div>
-                </div>
-                <div>
-                    <div class="uk-card uk-card-default uk-card-body" style="width: 85%; margin-left: 12%;">
-                        <ul id="carrito">
-                            <button onclick="comprar()">
-                                Comprar!
-                            </button>
-                        </ul>
                     </div>
                 </div>
             </div>
