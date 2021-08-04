@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
     }
 
     public void showMessage(String message) {
@@ -54,15 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             showMessage(response.getString("message"));
                             if(response.getString("message").equals("Satisfactorio")){
-                                try {
-                                    String username = response.getString("username");
-                                    int role = response.getInt("role");
-                                    int userId = response.getInt("userid");
-
-                                    goToLogin();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                goToLogin();
                             }
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
@@ -83,7 +75,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void goToLogin(){
-
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
 }
