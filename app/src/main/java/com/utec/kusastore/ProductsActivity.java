@@ -41,7 +41,15 @@ public class ProductsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.main_recycle_view);
         setTitle(getIntent().getExtras().getString("username"));
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if(getIntent().getExtras().getInt("role") == 2){
+            getMenuInflater().inflate(R.menu.menu_admin, menu);
+            return true;
+        }
+        return false;
+    }
     @Override
     protected void onResume(){
         super.onResume();
@@ -117,7 +125,7 @@ public class ProductsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         //TODO Process response
-                        mAdapter = new ProductsAdapter(response, getActivity());
+                        mAdapter = new ProductsAdapter(response, getActivity(), getIntent());
                         recyclerView.setAdapter(mAdapter);
                     }
                 },
@@ -132,5 +140,24 @@ public class ProductsActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
+    }
+
+    public void goToCreateProduct(MenuItem item) {
+        Intent intent = new Intent(this, CreateActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToUpdateProduct(MenuItem item) {
+        Intent intent = new Intent(this, UpdateActivity.class);
+        startActivity(intent);
+    }
+
+    public void goToDeleteProduct(MenuItem item) {
+        Intent intent = new Intent(this, DeleteActivity.class);
+        startActivity(intent);
+    }
+    public void goToHistoryProducts(MenuItem item) {
+        Intent intent = new Intent(this, DeleteActivity.class);
+        startActivity(intent);
     }
 }

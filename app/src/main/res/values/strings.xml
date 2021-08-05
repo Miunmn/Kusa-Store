@@ -9,4 +9,7 @@
     <string name="pregunta">Ya tienes cuenta? Inica sesion</string>
     <string name="registrate_ahora">Registrate ahora!</string>
     <string name="registrar">Registrar</string>
+    <string name="opciones_de_administrador">Opciones de administrador</string>
+    <string name="agregar_producto">Agregar producto</string>
+    <string name="actualizar_producto">Actualizar producto</string>
 </resources>

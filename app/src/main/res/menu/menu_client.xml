@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.utec.kusastore.ProductsActivity">
+    <item
+        android:id="@+id/eliminar"
+        android:orderInCategory="100"
+        android:title="@string/agregar_producto"
+        android:onClick="goToHistoryProducts"
+        app:showAsAction="never" />
+</menu>
