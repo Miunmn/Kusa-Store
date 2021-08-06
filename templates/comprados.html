@@ -63,10 +63,10 @@
                     <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
                     <div class="menu-menu-1-container">
                         <ul id="menu-menu-1" class="menu">
-                            <li><a href="/">Home</a></li>
+                            <li><a href="/">Home</a></li>                                        
                             {% if not current_user.is_admin %}
                             <li><a href="/comprados">Productos comprados</a></li>
-                            {% endif %}                        
+                            {% endif %}
                         </ul>
                     </div>
                 </nav>
@@ -79,19 +79,11 @@
                                 <ul class="products">
                                     {% if allproducts %} {% for product in allproducts %}
                                     <li class="product">
-                                        {% if current_user.is_admin %}
-                                            <a href="/deleteproduct?name={{product.nombre}}"><span style="margin-left: 150px;" uk-icon="icon: close; ratio: 1"></span></a>
-                                        {% endif %}
                                         <a href="/singleproduct?name={{product.nombre}}">
                                             <img src="{{ product.img_url }}" alt="">
                                             <h3>{{ product.nombre }}</h3>
                                             <span class="price"><span class="amount">${{ product.precio }}</span></span>
                                         </a>
-                                        {% if not current_user.is_authenticated %}
-                                            <a href="/login" class="button">Comprar producto</a>
-                                        {% elif not current_user.is_admin %}
-                                            <a id="{{product.nombre}}"  class="button" onclick="comprar(this.id)">Comprar producto</a>
-                                        {% endif %}
                                     </li>
                                     {% endfor %} {% endif %}
                                 </ul>
@@ -102,47 +94,6 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <div id="content" class="site-content">
-                <div id="primary" class="content-area column full">
-                    <main id="main" class="site-main" role="main">
-                        <p class="woocommerce-result-count">
-                            Showing results
-                        </p>
-                        <form class="woocommerce-ordering" method="get">
-                            <select name="orderby" class="orderby">
-						<option value="menu_order" selected="selected">Default sorting</option>
-						<option value="popularity">Sort by popularity</option>
-						<option value="rating">Sort by average rating</option>
-						<option value="date">Sort by newness</option>
-						<option value="price">Sort by price: low to high</option>
-						<option value="price-desc">Sort by price: high to low</option>
-					</select>
-                        </form>
-                        <ul class="products">
-                            {% if allproducts %} {% for product in allproducts %}
-                            <li class="product">
-                                {% if ifadmin %}
-                                    <a href="/deleteproduct?name={{product.nombre}}"><span style="margin-left: 150px;" uk-icon="icon: close; ratio: 1"></span></a>
-                                {% endif %}
-                                <a href="/singleproduct?name={{product.nombre}}">
-                                    <img src="{{ product.img_url }}" alt="">
-                                    <h3>{{ product.nombre }}</h3>
-                                    <span class="price"><span class="amount">${{ product.precio }}</span></span>
-                                </a>
-                                {% if not current_user.is_authenticated %}
-                                    <a href="/login" class="button">Add to cart</a>
-                                {% elif ifcliente %}
-                                    <a id="{{product.nombre}}"  class="button" onclick="addtocart(this.id)">Add to cart</a>
-                                {% endif %}
-                            </li>
-                            {% endfor %} {% endif %}
-                        </ul>
-                    </main>
-                </div>
-            </div>
--->
-
         </div>
         <footer id="colophon" class="site-footer">
             <div class="container">

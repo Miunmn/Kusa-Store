@@ -229,6 +229,30 @@ def create_product():
         db.session.rollback()
         abort(500)
 
+@app.route('/createproductmobile', methods=['POST'])
+def createproductmobile():
+    newproductinfo = request.get_json()
+    producto_ = Producto.query.filter_by(nombre=newproductinfo.get('nombre')).first()
+    response = {}
+    if producto_ is not None:
+        response['message'] = 'Producto ya existente'
+        return jsonify(response)
+    else:
+        try:
+            producto = Producto(
+                nombre=newproductinfo.get('nombre'),
+                precio=newproductinfo.get('precio'),
+                descripcion=newproductinfo.get('descripcion'),
+                stock=newproductinfo.get('stock'),
+                img_url=newproductinfo.get('imagen')
+            )
+            db.session.add(producto)
+            db.session.commit()
+            response['message'] = 'Producto creado con éxito'
+            return jsonify(response)
+        except Exception:
+            db.session.rollback()
+            return abort(500)
 
 @app.route('/updateproduct', methods=['GET', 'POST'])
 def update_product():
@@ -402,7 +426,6 @@ def aux_buy_product_list(user, productjson):
             fail.append(producto)
     except IntegrityError:
         fail.append(producto)
-
     if len(bought) > 0:
         compra = Compra(
             user_id=user.id,
@@ -492,6 +515,11 @@ def loginmobile():
     return jsonify(response)
 
 
+@app.route('/productoscomprados', methods=['GET'])
+def productoscomprados():
+    
+    return jsonify([o.to_json() for o in Producto.query.all()])
+
 @app.route('/products/get-all', methods=['GET'])
 def get_all():
     return jsonify([o.to_json() for o in Producto.query.all()])
@@ -503,6 +531,15 @@ def get_product(id):
     if product is None:
         return jsonify({"found": False})
     return jsonify({"found": True, "product": product.to_json()})
+
+@app.route('/comprados', methods=['GET'])
+def comprados():
+    user = current_user
+    if user.is_authenticated:
+        if user.access == ACCESS['client']: ## NO JUNTAR LOS 2 IF PORQUE EXPLOTA
+            allproducts =  Producto.query.all() ###CAMBIAR QUERY  
+            return render_template('comprados.html',  allproducts=allproducts)
+    return redirect(url_for('.index'))
 
 
 if __name__ == '__main__':

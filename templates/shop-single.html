@@ -11,6 +11,7 @@
     <link rel='stylesheet' href={{ url_for( 'static', filename='css/font-awesome.min.css' )}} type='text/css' media='all' />
     <link rel='stylesheet' href={{ url_for( 'static', filename='style.css' )}} type='text/css' media='all' />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Oswald:400,500,700%7CRoboto:400,500,700%7CHerr+Von+Muellerhoff:400,500,700%7CQuattrocento+Sans:400,500,700' type='text/css' media='all' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css" />
     <link rel='stylesheet' href={{ url_for( 'static', filename='css/easy-responsive-shortcodes.css' )}} type='text/css' media='all' />
 </head>
 
@@ -77,12 +78,7 @@
                                                 {{ producto.descripcion }}
                                             </p>
                                         </div>
-                                        <form class="cart" method="post" enctype='multipart/form-data'>
-                                            <div class="quantity">
-                                                <input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" />
-                                            </div>
-                                            <button type="submit" class="single_add_to_cart_button button alt">Add to cart</button>
-                                        </form>
+                                            <button type="submit" class="single_add_to_cart_button button alt"><a id="{{producto.nombre}}"  class="button" onclick="comprar(this.id)">Comprar producto</a></button>
                                         <div class="product_meta">
                                             <span class="posted_in">Categories: 
 									<a href="#" rel="tag">Clothing</a>, 
@@ -112,7 +108,10 @@
     <script src={{ url_for( 'static', filename='js/jquery.js' )}}></script>
     <script src={{ url_for( 'static', filename='js/plugins.js' )}}></script>
     <script src={{ url_for( 'static', filename='js/scripts.js' )}}></script>
+    <script src={{ url_for( 'static', filename='js/shop.js' )}}></script>
     <script src={{ url_for( 'static', filename='js/masonry.pkgd.min.js' )}}></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@latest/dist/js/uikit-icons.min.js"></script>
 </body>
 
 </html>
