@@ -12,4 +12,5 @@
     <string name="opciones_de_administrador">Opciones de administrador</string>
     <string name="agregar_producto">Agregar producto</string>
     <string name="actualizar_producto">Actualizar producto</string>
+    <string name="crear">Crear</string>
 </resources>

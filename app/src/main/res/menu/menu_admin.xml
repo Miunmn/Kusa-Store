@@ -8,16 +8,4 @@
         android:title="@string/agregar_producto"
         android:onClick="goToCreateProduct"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/actualizar"
-        android:orderInCategory="100"
-        android:title="@string/actualizar_producto"
-        android:onClick="goToUpdateProduct"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/eliminar"
-        android:orderInCategory="100"
-        android:title="@string/agregar_producto"
-        android:onClick="goToDeleteProduct"
-        app:showAsAction="never" />
 </menu>
