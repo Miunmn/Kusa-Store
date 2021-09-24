@@ -1,4 +1,4 @@
-# nada
+# Kusa-Store
 Go to root directory  (where docker-compose file was created) and execute:
 docker-compose up  -d   # Run the container.
 
